@@ -62,3 +62,49 @@ func GetRanks(c *fiber.Ctx) error {
 		"ranks": ranks,
 	})
 }
+
+func GetRanksAndMembers(c *fiber.Ctx) error {
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	ranks, err := db.GetRanksAndMembers()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"error": false,
+		"ranks": ranks,
+	})
+}
+
+func GetRanksMembersAndRoles(c *fiber.Ctx) error {
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	ranks, err := db.GetRanksMembersAndRoles()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"error": false,
+		"ranks": ranks,
+	})
+}

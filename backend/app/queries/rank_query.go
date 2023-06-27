@@ -49,3 +49,19 @@ func (q *RankQueries) GetRanksAndMembers() ([]models.RankAndMembers, error) {
 
 	return ranks, nil
 }
+
+func (q *RankQueries) GetRanksMembersAndRoles() ([]models.RankMembersAndRoles, error) {
+	ranks := []models.RankMembersAndRoles{}
+
+	query := `SELECT * FROM rank r
+		INNER JOIN member m ON r.rankId = m.rankId
+		INNER JOIN memberrole mr ON m.memId = mr.memId
+		INNER JOIN role ro ON mr.roleId = ro.roleId`
+
+	err := q.Select(&ranks, query)
+	if err != nil {
+		return nil, err
+	}
+
+	return ranks, nil
+}

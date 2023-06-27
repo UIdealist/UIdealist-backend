@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"management-helper/app/models"
 	"management-helper/pkg/utils"
 	"management-helper/platform/database"
@@ -75,10 +76,11 @@ func GetMembers(c *fiber.Ctx) error {
 	// Get all books.
 	members, err := db.GetMembers()
 	if err != nil {
+		fmt.Println(err)
 		// Return, if books not found.
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
-			"msg":     "books were not found",
+			"msg":     "members were not found",
 			"count":   0,
 			"members": nil,
 		})
