@@ -41,9 +41,9 @@ func (q *MemberQueries) GetMember(id uuid.UUID) (models.Member, error) {
 }
 
 func (q *MemberQueries) CreateMember(member *models.Member) error {
-	query := "INSERT INTO member VALUES ($1, $2, $3)"
+	query := "INSERT INTO member(memName, rankId) VALUES ($1, $2)"
 
-	_, err := q.Exec(query, member.ID, member.Name, member.Rank)
+	_, err := q.Exec(query, member.Name, member.Rank)
 	if err != nil {
 		return err
 	}

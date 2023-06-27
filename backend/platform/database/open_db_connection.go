@@ -11,6 +11,8 @@ import (
 type Queries struct {
 	*queries.UserQueries   // load queries from User model
 	*queries.MemberQueries // load queries from Member model
+	*queries.RankQueries   // load queries from Rank model
+	*queries.RoleQueries   // load queries from Role model
 }
 
 // OpenDBConnection func for opening database connection.
@@ -39,6 +41,8 @@ func OpenDBConnection() (*Queries, error) {
 	return &Queries{
 		// Set queries from models:
 		UserQueries:   &queries.UserQueries{DB: db},   // from User model
-		MemberQueries: &queries.MemberQueries{DB: db}, // from Book model
+		MemberQueries: &queries.MemberQueries{DB: db}, // from Member model
+		RankQueries:   &queries.RankQueries{DB: db},   // from Rank model
+		RoleQueries:   &queries.RoleQueries{DB: db},   // from Role model
 	}, nil
 }

@@ -3,7 +3,7 @@ package models
 import "time"
 
 type History struct {
-	ID          int       `db:"historyId" json:"id" validate:"required"`
+	ID          int       `db:"historyId" json:"id"`
 	Date        time.Time `db:"historyDate" json:"date" validate:"required"`
 	Description string    `db:"historyDescription" json:"description" validate:"required"`
 	Member      int       `db:"memId" json:"member"`
