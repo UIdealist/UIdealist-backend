@@ -17,3 +17,4 @@ tmp/
 # Files
 hosts.ini
 *.out
+.env
