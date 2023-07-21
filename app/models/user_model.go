@@ -7,11 +7,10 @@ import (
 	"idealist/pkg/repository"
 )
 
-// SignIn struct to describe login user.
+// User model and variations definition (included anonymous users)
 type User struct {
-	gorm.Model
 	// One-to-one relationship with Member table
-	ID string `json:"id" gorm:"primaryKey"`
+	ID string `json:"id" gorm:"primaryKey;column:usr_id"`
 
 	MemberID string `json:"memberId" gorm:"column:mem_id"`
 	Member   Member `json:"member" gorm:"foreignKey:MemberID;references:ID"`
@@ -27,9 +26,8 @@ func (user *User) TableName() string {
 }
 
 type AnonymousUser struct {
-	gorm.Model
 	// One-to-one relationship with Member table
-	ID string `gorm:"primaryKey" json:"id"`
+	ID string `json:"id" gorm:"primaryKey;column:auser_id"`
 
 	MemberID string `json:"memberId" gorm:"column:mem_id"`
 	Member   Member `json:"member" gorm:"foreignKey:MemberID;references:ID"`
@@ -48,12 +46,14 @@ func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
 
 	// Create member
 	member := Member{
-		ID:   uuid.New().String(),
-		Type: repository.MemberIsUser,
+		ID:           uuid.New().String(),
+		SubClassID:   user.ID,
+		SubClassType: repository.MemberIsUser,
 	}
 
 	// Reference member to user
 	user.MemberID = member.ID
+	user.Member = member
 
 	tx.Create(&member)
 
@@ -67,12 +67,14 @@ func (anonymousUser *AnonymousUser) BeforeCreate(tx *gorm.DB) (err error) {
 
 	// Create member
 	member := Member{
-		ID:   uuid.New().String(),
-		Type: repository.MemberIsAnonymousUser,
+		ID:           uuid.New().String(),
+		SubClassID:   anonymousUser.ID,
+		SubClassType: repository.MemberIsAnonymousUser,
 	}
 
 	// Reference member to anonymous user
 	anonymousUser.MemberID = member.ID
+	anonymousUser.Member = member
 
 	return
 }

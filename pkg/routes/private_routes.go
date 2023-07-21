@@ -14,7 +14,10 @@ func PrivateRoutes(a *fiber.App) {
 
 	// Routes for POST method:
 	route.Post("/user/sign/out", middleware.JWTProtected(), middleware.JWTExpirationChecker(), controllers.UserSignOut) // de-authorization user
-	route.Post("/user/sign/in", controllers.UserSignIn)                                                                 // authorization user
 	route.Post("/token/renew", middleware.JWTProtected(), controllers.RenewTokens)                                      // renew Access & Refresh tokens
 
+	route.Post("/brainstorm", middleware.JWTProtected(), middleware.JWTExpirationChecker(), controllers.CreateBrainstorm) // create new brainstorm
+	route.Post("/idea", middleware.JWTProtected(), middleware.JWTExpirationChecker(), controllers.CreateIdea)             // create new idea
+	route.Post("/project", middleware.JWTProtected(), middleware.JWTExpirationChecker(), controllers.CreateProject)       // create new project
+	route.Get("/project/owned", middleware.JWTProtected(), middleware.JWTExpirationChecker(), controllers.GetOwnedProjects)
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"idealist/app/crud"
 	"idealist/app/models"
 	"idealist/pkg/utils"
 	"idealist/platform/cache"
@@ -23,7 +24,7 @@ import (
 // @Success 201 {string} status "ok"
 // @Router /v1/user/sign/up [post]
 func UserSignUp(c *fiber.Ctx) error {
-	signUp := &models.SignUp{}
+	signUp := &crud.SignUp{}
 
 	// Checking received data from JSON body.
 	if err := c.BodyParser(signUp); err != nil {
@@ -46,6 +47,7 @@ func UserSignUp(c *fiber.Ctx) error {
 		Password: hashedPassword,
 		Email:    signUp.Email,
 		Verified: false,
+		Member:   models.Member{},
 	}
 
 	// Create a new user in database.
@@ -78,7 +80,7 @@ func UserSignUp(c *fiber.Ctx) error {
 // @Router /v1/user/sign/in [post]
 func UserSignIn(c *fiber.Ctx) error {
 	// Create a new user auth struct.
-	signIn := &models.SignIn{}
+	signIn := &crud.SignIn{}
 
 	// Checking received data from JSON body.
 	if err := c.BodyParser(signIn); err != nil {
@@ -114,7 +116,7 @@ func UserSignIn(c *fiber.Ctx) error {
 	}
 
 	// Generate a new pair of access and refresh tokens.
-	tokens, err := utils.GenerateNewTokens(foundedUser.Username)
+	tokens, err := utils.GenerateNewTokens(foundedUser.ID)
 	if err != nil {
 		// Return status 500 and token generation error.
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -241,7 +243,7 @@ func RenewTokens(c *fiber.Ctx) error {
 	}
 
 	// Create a new renew refresh token struct.
-	renew := &models.Renew{}
+	renew := &crud.Renew{}
 
 	// Checking received data from JSON body.
 	if err := c.BodyParser(renew); err != nil {

@@ -1,14 +1,10 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
-// SignIn struct to describe login user.
+// Member model
 type Member struct {
-	gorm.Model
-	ID   string `gorm:"primaryKey" json:"id"`
-	Type string `gorm:"column:mem_type" json:"type"`
+	ID           string `gorm:"column:mem_id;primaryKey" json:"id"`
+	SubClassID   string `gorm:"column:sub_class_id" json:"subclassId"`
+	SubClassType string `gorm:"column:sub_class_type" json:"subclassType"`
 }
 
 func (member *Member) TableName() string {

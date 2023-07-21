@@ -1,4 +1,4 @@
-package models
+package crud
 
 // SignIn struct to describe login user.
 type SignIn struct {

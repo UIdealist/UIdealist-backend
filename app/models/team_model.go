@@ -1,26 +1,51 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"idealist/pkg/repository"
 
-// SignIn struct to describe login user.
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
+
+// Team model and relations definition
 type Team struct {
-	gorm.Model
 	// One-to-one relationship with Member table
-	ID string `gorm:"primaryKey" json:"id"`
+	ID string `gorm:"primaryKey;column:team_id" json:"id"`
 
 	MemberID string `json:"memberId" gorm:"column:mem_id"`
 	Member   Member `json:"member" gorm:"foreignKey:MemberID;references:ID"`
-	Name     string `gorm:"column:team_name" json:"name" validate:"required;lte=45"`
+
+	Name string `gorm:"column:team_name" json:"name" validate:"required;lte=45"`
 }
 
 func (t *Team) TableName() string {
 	return "team"
 }
 
+// Before creating the team, create its UUID and member
+func (team *Team) BeforeCreate(tx *gorm.DB) (err error) {
+	// Create UUID
+	team.ID = uuid.New().String()
+
+	// Create member
+	member := Member{
+		ID:           uuid.New().String(),
+		SubClassID:   team.ID,
+		SubClassType: repository.MemberIsUser,
+	}
+
+	// Reference member to user
+	team.MemberID = member.ID
+	team.Member = member
+
+	tx.Create(&member)
+
+	return
+}
+
 type TeamRole struct {
-	gorm.Model
 	// One-to-one relationship with Member table
-	ID   string `gorm:"primaryKey" json:"id"`
+	ID   string `gorm:"primaryKey;column:team_role_id" json:"id"`
 	Name string `gorm:"column:team_role_name" json:"name" validate:"required;lte=45"`
 }
 
@@ -28,11 +53,16 @@ func (t *TeamRole) TableName() string {
 	return "teamrole"
 }
 
+// Before creating the user, create its UUID and member
+func (t *TeamRole) BeforeCreate(tx *gorm.DB) (err error) {
+	// Create UUID
+	t.ID = uuid.New().String()
+	return
+}
+
 // Intermediary table for many-to-many relationship between Team and Member
 type TeamHasMember struct {
-	gorm.Model
-
-	ID string `gorm:"primaryKey;" json:"id"`
+	ID string `gorm:"primaryKey;column:team_has_mem_id" json:"id"`
 
 	// One-to-many relationship with Team table
 	TeamID string `gorm:"column:team_id" json:"teamId"`
@@ -51,4 +81,11 @@ type TeamHasMember struct {
 
 func (thm *TeamHasMember) TableName() string {
 	return "team_has_member"
+}
+
+// Before creating the user, create its UUID and member
+func (thm *TeamHasMember) BeforeCreate(tx *gorm.DB) (err error) {
+	// Create UUID
+	thm.ID = uuid.New().String()
+	return
 }
