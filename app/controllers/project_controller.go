@@ -147,7 +147,7 @@ func GetOwnedProjects(c *fiber.Ctx) error {
 	projects := []models.Project{}
 	error = db.Where(&models.Project{
 		OwnerID: memberID,
-	}).Find(&projects).Error
+	}).Find(&projects).Preload("project").Error
 
 	if error != nil {
 		// Return status 500 and database connection error.
